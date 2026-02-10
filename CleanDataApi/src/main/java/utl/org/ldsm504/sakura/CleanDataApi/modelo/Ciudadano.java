@@ -1,4 +1,6 @@
 package utl.org.ldsm504.sakura.CleanDataApi.modelo;
 
-public class Ciudadano {
+public class Ciudadano extends Usuario{
+    private String direccionCalle;
+    private Colonia colonia;
 }
