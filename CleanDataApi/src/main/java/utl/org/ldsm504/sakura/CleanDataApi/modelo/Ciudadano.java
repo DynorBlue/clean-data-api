@@ -3,6 +3,7 @@ package utl.org.ldsm504.sakura.CleanDataApi.modelo;
 import jakarta.persistence.*;
 
 @Entity
+
 @Table(name = "ciudadano")
 @PrimaryKeyJoinColumn(name = "id_usuario")
 public class Ciudadano extends Usuario {

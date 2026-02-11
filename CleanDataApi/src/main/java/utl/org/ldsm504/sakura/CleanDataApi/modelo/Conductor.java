@@ -2,7 +2,6 @@ package utl.org.ldsm504.sakura.CleanDataApi.modelo;
 
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity

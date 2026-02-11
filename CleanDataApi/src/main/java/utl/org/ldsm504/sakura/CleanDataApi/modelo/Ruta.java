@@ -1,7 +1,6 @@
 package utl.org.ldsm504.sakura.CleanDataApi.modelo;
 
 import jakarta.persistence.*;
-import org.springframework.data.annotation.Id;
 
 @Entity
 @Table(name = "ruta")
