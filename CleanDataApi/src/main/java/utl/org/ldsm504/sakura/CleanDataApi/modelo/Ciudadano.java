@@ -3,10 +3,17 @@ package utl.org.ldsm504.sakura.CleanDataApi.modelo;
 import jakarta.persistence.*;
 
 @Entity
-
 @Table(name = "ciudadano")
-@PrimaryKeyJoinColumn(name = "id_usuario")
-public class Ciudadano extends Usuario {
+public class Ciudadano {
+
+    @Id
+    @Column(name = "id_persona")
+    private Integer idPersona;
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id_persona")
+    private Persona persona;
 
     @Column(name = "direccion_calle", nullable = false, length = 200)
     private String direccionCalle;
@@ -18,9 +25,11 @@ public class Ciudadano extends Usuario {
     public Ciudadano() {
     }
 
-    public Ciudadano(Colonia colonia, String direccionCalle) {
+    public Ciudadano(Colonia colonia, String direccionCalle, Integer idPersona, Persona persona) {
         this.colonia = colonia;
         this.direccionCalle = direccionCalle;
+        this.idPersona = idPersona;
+        this.persona = persona;
     }
 
     public Colonia getColonia() {
@@ -37,5 +46,21 @@ public class Ciudadano extends Usuario {
 
     public void setDireccionCalle(String direccionCalle) {
         this.direccionCalle = direccionCalle;
+    }
+
+    public Integer getIdPersona() {
+        return idPersona;
+    }
+
+    public void setIdPersona(Integer idPersona) {
+        this.idPersona = idPersona;
+    }
+
+    public Persona getPersona() {
+        return persona;
+    }
+
+    public void setPersona(Persona persona) {
+        this.persona = persona;
     }
 }
