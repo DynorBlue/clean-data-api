@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED) // O InheritanceType.TABLE_PER_CLASS
 @Table(name = "usuario")
 public class Usuario {
 
