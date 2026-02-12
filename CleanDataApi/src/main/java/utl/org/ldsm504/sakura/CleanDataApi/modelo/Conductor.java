@@ -6,10 +6,18 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "conductor")
-@PrimaryKeyJoinColumn(name = "id_usuario")
-public class Conductor extends Usuario {
+public class Conductor {
 
-    @Column(name = "licencia", nullable = false, length = 50)
+    @Id
+    @Column(name = "id_persona")
+    private Integer idPersona;
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id_persona")
+    private Persona persona;
+
+    @Column(nullable = false, length = 50)
     private String licencia;
 
     @Column(name = "fecha_alta", nullable = false)
@@ -25,11 +33,13 @@ public class Conductor extends Usuario {
     public Conductor() {
     }
 
-    public Conductor(EstadoOperativo estadoOperativo, LocalDate fechaAlta, LocalDate fechaBaja, String licencia) {
+    public Conductor(EstadoOperativo estadoOperativo, LocalDate fechaAlta, LocalDate fechaBaja, Integer idPersona, String licencia, Persona persona) {
         this.estadoOperativo = estadoOperativo;
         this.fechaAlta = fechaAlta;
         this.fechaBaja = fechaBaja;
+        this.idPersona = idPersona;
         this.licencia = licencia;
+        this.persona = persona;
     }
 
     public EstadoOperativo getEstadoOperativo() {
@@ -56,6 +66,14 @@ public class Conductor extends Usuario {
         this.fechaBaja = fechaBaja;
     }
 
+    public Integer getIdPersona() {
+        return idPersona;
+    }
+
+    public void setIdPersona(Integer idPersona) {
+        this.idPersona = idPersona;
+    }
+
     public String getLicencia() {
         return licencia;
     }
@@ -63,5 +81,12 @@ public class Conductor extends Usuario {
     public void setLicencia(String licencia) {
         this.licencia = licencia;
     }
-}
 
+    public Persona getPersona() {
+        return persona;
+    }
+
+    public void setPersona(Persona persona) {
+        this.persona = persona;
+    }
+}
