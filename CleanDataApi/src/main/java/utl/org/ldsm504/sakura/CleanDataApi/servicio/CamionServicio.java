@@ -13,7 +13,7 @@ public interface CamionServicio {
     Camion actualizarCamion(Camion camion);
     void eliminarCamion(Integer id);
 
-    // Personalizado: comentarios de una tarea
+    // Personalizado:
     List<Camion> obtenerCamionPorEstado(EstadoCamion estadoCamion);
     Camion actualizarCamionPorId(Integer id, Camion datos);
 }

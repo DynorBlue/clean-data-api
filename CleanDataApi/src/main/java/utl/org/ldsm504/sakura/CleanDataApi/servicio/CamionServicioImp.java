@@ -51,9 +51,9 @@ public class CamionServicioImp implements CamionServicio{
     @Override
     public void eliminarCamion(Integer id) {
         if (!camionRepositorio.existsById(id)) {
-            throw new RuntimeException("No existe camión con id " + id);
-        }
-        camionRepositorio.deleteById(id);
+                throw new RuntimeException("No existe camión con id " + id);
+            }
+            camionRepositorio.deleteById(id);
     }
 
     @Override
