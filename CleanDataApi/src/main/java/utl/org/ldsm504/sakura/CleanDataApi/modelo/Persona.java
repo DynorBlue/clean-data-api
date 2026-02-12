@@ -19,7 +19,7 @@ public class Persona {
 
     @OneToOne
     @JoinColumn(name = "id_usuario", unique = true)
-    private Usuario usuario;
+    private      Usuario usuario;
 
     public Persona() {
     }
