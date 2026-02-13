@@ -1,5 +1,6 @@
 package utl.org.ldsm504.sakura.CleanDataApi.servicio;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Camion;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.EstadoCamion;
@@ -31,6 +32,7 @@ public class CamionServicioImp implements CamionServicio{
         return camionRepositorio.findAll();
     }
 
+    @Transactional
     @Override
     public Camion actualizarCamion(Camion camion) {
         if (camion.getIdCamion() == null) {
@@ -61,6 +63,7 @@ public class CamionServicioImp implements CamionServicio{
         return camionRepositorio.findByEstado(estadoCamion);
     }
 
+    @Transactional
     @Override
     public Camion actualizarCamionPorId(Integer id, Camion datos) {
         Camion existente = obtenerCamionPorId(id);

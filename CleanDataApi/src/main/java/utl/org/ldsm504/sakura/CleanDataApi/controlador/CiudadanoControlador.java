@@ -2,16 +2,14 @@ package utl.org.ldsm504.sakura.CleanDataApi.controlador;
 
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.RegistroCiudadanoRequest;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.*;
 import utl.org.ldsm504.sakura.CleanDataApi.repositorio.ColoniaRepositorio;
 import utl.org.ldsm504.sakura.CleanDataApi.servicio.CiudadanoServicio;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/ciudadanos")
@@ -50,4 +48,26 @@ public class CiudadanoControlador {
                 ciudadanoServicio.registrarCiudadano(usuario, persona, ciudadano)
         );
     }
+
+    @GetMapping
+    public List<Ciudadano> obtenerTodos() {
+        return ciudadanoServicio.obtenerTodos();
+    }
+
+    @GetMapping("/{id}")
+    public Ciudadano obtenerPorId(@PathVariable Integer id) {
+        return ciudadanoServicio.obtenerPorId(id);
+    }
+
+    @PutMapping("/{id}")
+    public Ciudadano actualizar(@PathVariable Integer id,
+                                @RequestBody Ciudadano datos) {
+        return ciudadanoServicio.actualizar(id, datos);
+    }
+
+    @DeleteMapping("/{id}")
+    public void eliminar(@PathVariable Integer id) {
+        ciudadanoServicio.eliminar(id);
+    }
+
 }

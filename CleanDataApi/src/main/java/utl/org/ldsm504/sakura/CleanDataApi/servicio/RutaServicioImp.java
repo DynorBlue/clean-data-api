@@ -1,11 +1,13 @@
 package utl.org.ldsm504.sakura.CleanDataApi.servicio;
 
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Camion;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Ruta;
 import utl.org.ldsm504.sakura.CleanDataApi.repositorio.RutaRepositorio;
 
 import java.util.List;
-
+@Service
 public class RutaServicioImp implements RutaServicio{
 
     private final RutaRepositorio rutaRepositorio;
@@ -30,7 +32,7 @@ public class RutaServicioImp implements RutaServicio{
     public List<Ruta> obtenerTodosRutas() {
         return rutaRepositorio.findAll();
     }
-
+    @Transactional
     @Override
     public Ruta actualizarRuta(Ruta ruta) {
         if (ruta.getIdRuta() == null) {

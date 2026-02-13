@@ -1,16 +1,14 @@
 package utl.org.ldsm504.sakura.CleanDataApi.controlador;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.RegistroConductorRequest;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.*;
 import utl.org.ldsm504.sakura.CleanDataApi.servicio.ConductorServicio;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/conductores")
@@ -44,5 +42,30 @@ public class ConductorControlador {
         return ResponseEntity.ok(
                 conductorServicio.registrarConductor(usuario, persona, conductor)
         );
+    }
+    @GetMapping
+    public List<Conductor> obtenerTodos() {
+        return conductorServicio.obtenerTodos();
+    }
+
+    @GetMapping("/{id}")
+    public Conductor obtenerPorId(@PathVariable Integer id) {
+        return conductorServicio.obtenerPorId(id);
+    }
+
+    @GetMapping("/estado/{estado}")
+    public List<Conductor> obtenerPorEstado(@PathVariable EstadoOperativo estado) {
+        return conductorServicio.obtenerPorEstado(estado);
+    }
+
+    @PutMapping("/{id}")
+    public Conductor actualizar(@PathVariable Integer id,
+                                @RequestBody Conductor datos) {
+        return conductorServicio.actualizar(id, datos);
+    }
+
+    @DeleteMapping("/{id}")
+    public void eliminar(@PathVariable Integer id) {
+        conductorServicio.eliminar(id);
     }
 }

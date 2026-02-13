@@ -1,11 +1,13 @@
 package utl.org.ldsm504.sakura.CleanDataApi.servicio;
 
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Camion;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Colonia;
 import utl.org.ldsm504.sakura.CleanDataApi.repositorio.ColoniaRepositorio;
 
 import java.util.List;
-
+@Service
 public class ColoniaServicioImp implements ColoniaServicio{
 
     private final ColoniaRepositorio coloniaRepositorio;
@@ -31,6 +33,7 @@ public class ColoniaServicioImp implements ColoniaServicio{
         return coloniaRepositorio.findAll();
     }
 
+    @Transactional
     @Override
     public Colonia actualizarColonia(Colonia colonia) {
         if (colonia.getIdColonia() == null) {
@@ -54,6 +57,7 @@ public class ColoniaServicioImp implements ColoniaServicio{
         coloniaRepositorio.deleteById(id);
     }
 
+    @Transactional
     @Override
     public Colonia actualizarColoniaPorId(Integer id, Colonia datos) {
         Colonia existente = obtenerColoniaPorId(id);

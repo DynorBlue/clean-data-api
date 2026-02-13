@@ -1,15 +1,16 @@
 package utl.org.ldsm504.sakura.CleanDataApi.servicio;
 
-import utl.org.ldsm504.sakura.CleanDataApi.modelo.Camion;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.TipoResiduo;
 import utl.org.ldsm504.sakura.CleanDataApi.repositorio.TipoResiduoRepositorio;
 
 import java.util.List;
-
-public class TipoResiduoImp implements TipoResiduoServicio{
+@Service
+public class TipoResiduoServicioImp implements TipoResiduoServicio{
     private final TipoResiduoRepositorio tipoResiduoRepositorio;
 
-    public TipoResiduoImp(TipoResiduoRepositorio tipoResiduoRepositorio) {
+    public TipoResiduoServicioImp(TipoResiduoRepositorio tipoResiduoRepositorio) {
         this.tipoResiduoRepositorio = tipoResiduoRepositorio;
     }
 
@@ -28,7 +29,7 @@ public class TipoResiduoImp implements TipoResiduoServicio{
     public List<TipoResiduo> obtenerTodosTiposResiduos() {
         return tipoResiduoRepositorio.findAll();
     }
-
+    @Transactional
     @Override
     public TipoResiduo actualizarColonia(TipoResiduo tipoResiduo) {
         if (tipoResiduo.getIdTipo() == null) {
