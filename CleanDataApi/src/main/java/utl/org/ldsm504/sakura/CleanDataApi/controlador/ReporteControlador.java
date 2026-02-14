@@ -3,8 +3,10 @@ package utl.org.ldsm504.sakura.CleanDataApi.controlador;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import utl.org.ldsm504.sakura.CleanDataApi.dto.ReporteDTO;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.EstadoReporte;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Reporte;
+import utl.org.ldsm504.sakura.CleanDataApi.repositorio.*;
 import utl.org.ldsm504.sakura.CleanDataApi.servicio.ReporteServicio;
 
 import java.util.List;
@@ -14,14 +16,34 @@ import java.util.List;
 public class ReporteControlador {
 
     private final ReporteServicio reporteServicio;
+    private final UsuarioRepositorio usuarioRepositorio;
+    private final ColoniaRepositorio coloniaRepositorio;
+    private final TipoResiduoRepositorio tipoResiduoRepositorio;
 
-    public ReporteControlador(ReporteServicio reporteServicio) {
+    public ReporteControlador(ReporteServicio reporteServicio,
+                              UsuarioRepositorio usuarioRepositorio,
+                              ColoniaRepositorio coloniaRepositorio,
+                              TipoResiduoRepositorio tipoResiduoRepositorio) {
         this.reporteServicio = reporteServicio;
+        this.usuarioRepositorio = usuarioRepositorio;
+        this.coloniaRepositorio = coloniaRepositorio;
+        this.tipoResiduoRepositorio = tipoResiduoRepositorio;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Reporte crear(@RequestBody Reporte reporte) {
+    public Reporte crear(@RequestBody ReporteDTO dto) {
+        Reporte reporte = new Reporte();
+        reporte.setUsuario(usuarioRepositorio.findById(dto.getIdUsuario())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id " + dto.getIdUsuario())));
+        reporte.setColonia(coloniaRepositorio.findById(dto.getIdColonia())
+                .orElseThrow(() -> new RuntimeException("Colonia no encontrada con id " + dto.getIdColonia())));
+        if (dto.getIdTipoResiduo() != null) {
+            reporte.setTipoResiduo(tipoResiduoRepositorio.findById(dto.getIdTipoResiduo())
+                    .orElseThrow(() -> new RuntimeException("TipoResiduo no encontrado con id " + dto.getIdTipoResiduo())));
+        }
+        reporte.setDescripcion(dto.getDescripcion());
+        reporte.setEstado(EstadoReporte.PENDIENTE);
         return reporteServicio.crearReporte(reporte);
     }
 
@@ -41,7 +63,18 @@ public class ReporteControlador {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Reporte> actualizar(@PathVariable Integer id, @RequestBody Reporte reporte) {
+    public ResponseEntity<Reporte> actualizar(@PathVariable Integer id, @RequestBody ReporteDTO dto) {
+        Reporte reporte = new Reporte();
+        reporte.setUsuario(usuarioRepositorio.findById(dto.getIdUsuario())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id " + dto.getIdUsuario())));
+        reporte.setColonia(coloniaRepositorio.findById(dto.getIdColonia())
+                .orElseThrow(() -> new RuntimeException("Colonia no encontrada con id " + dto.getIdColonia())));
+        if (dto.getIdTipoResiduo() != null) {
+            reporte.setTipoResiduo(tipoResiduoRepositorio.findById(dto.getIdTipoResiduo())
+                    .orElseThrow(() -> new RuntimeException("TipoResiduo no encontrado con id " + dto.getIdTipoResiduo())));
+        }
+        reporte.setDescripcion(dto.getDescripcion());
+        reporte.setEstado(dto.getEstado());
         reporte.setIdReporte(id);
         return ResponseEntity.ok(reporteServicio.actualizarReporte(reporte));
     }

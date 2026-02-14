@@ -3,8 +3,9 @@ package utl.org.ldsm504.sakura.CleanDataApi.controlador;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import utl.org.ldsm504.sakura.CleanDataApi.modelo.EstadoViaje;
-import utl.org.ldsm504.sakura.CleanDataApi.modelo.Viaje;
+import utl.org.ldsm504.sakura.CleanDataApi.dto.ViajeDTO;
+import utl.org.ldsm504.sakura.CleanDataApi.modelo.*;
+import utl.org.ldsm504.sakura.CleanDataApi.repositorio.*;
 import utl.org.ldsm504.sakura.CleanDataApi.servicio.ViajeServicio;
 
 import java.util.List;
@@ -14,14 +15,38 @@ import java.util.List;
 public class ViajeControlador {
 
     private final ViajeServicio viajeServicio;
+    private final CamionRepositorio camionRepositorio;
+    private final ConductorRepositorio conductorRepositorio;
+    private final RutaRepositorio rutaRepositorio;
+    private final TipoResiduoRepositorio tipoResiduoRepositorio;
 
-    public ViajeControlador(ViajeServicio viajeServicio) {
+    public ViajeControlador(ViajeServicio viajeServicio,
+                           CamionRepositorio camionRepositorio,
+                           ConductorRepositorio conductorRepositorio,
+                           RutaRepositorio rutaRepositorio,
+                           TipoResiduoRepositorio tipoResiduoRepositorio) {
         this.viajeServicio = viajeServicio;
+        this.camionRepositorio = camionRepositorio;
+        this.conductorRepositorio = conductorRepositorio;
+        this.rutaRepositorio = rutaRepositorio;
+        this.tipoResiduoRepositorio = tipoResiduoRepositorio;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Viaje crear(@RequestBody Viaje viaje) {
+    public Viaje crear(@RequestBody ViajeDTO dto) {
+        Viaje viaje = new Viaje();
+        viaje.setCamion(camionRepositorio.findById(dto.getIdCamion())
+                .orElseThrow(() -> new RuntimeException("Camion no encontrado con id " + dto.getIdCamion())));
+        viaje.setConductor(conductorRepositorio.findById(dto.getIdConductor())
+                .orElseThrow(() -> new RuntimeException("Conductor no encontrado con id " + dto.getIdConductor())));
+        viaje.setRuta(rutaRepositorio.findById(dto.getIdRuta())
+                .orElseThrow(() -> new RuntimeException("Ruta no encontrada con id " + dto.getIdRuta())));
+        viaje.setTipoResiduo(tipoResiduoRepositorio.findById(dto.getIdTipoResiduo())
+                .orElseThrow(() -> new RuntimeException("TipoResiduo no encontrado con id " + dto.getIdTipoResiduo())));
+        viaje.setFechaInicio(dto.getFechaInicio());
+        viaje.setFechaFin(dto.getFechaFin());
+        viaje.setEstado(dto.getEstado());
         return viajeServicio.crearViaje(viaje);
     }
 
@@ -46,7 +71,19 @@ public class ViajeControlador {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Viaje> actualizar(@PathVariable Integer id, @RequestBody Viaje viaje) {
+    public ResponseEntity<Viaje> actualizar(@PathVariable Integer id, @RequestBody ViajeDTO dto) {
+        Viaje viaje = new Viaje();
+        viaje.setCamion(camionRepositorio.findById(dto.getIdCamion())
+                .orElseThrow(() -> new RuntimeException("Camion no encontrado con id " + dto.getIdCamion())));
+        viaje.setConductor(conductorRepositorio.findById(dto.getIdConductor())
+                .orElseThrow(() -> new RuntimeException("Conductor no encontrado con id " + dto.getIdConductor())));
+        viaje.setRuta(rutaRepositorio.findById(dto.getIdRuta())
+                .orElseThrow(() -> new RuntimeException("Ruta no encontrada con id " + dto.getIdRuta())));
+        viaje.setTipoResiduo(tipoResiduoRepositorio.findById(dto.getIdTipoResiduo())
+                .orElseThrow(() -> new RuntimeException("TipoResiduo no encontrado con id " + dto.getIdTipoResiduo())));
+        viaje.setFechaInicio(dto.getFechaInicio());
+        viaje.setFechaFin(dto.getFechaFin());
+        viaje.setEstado(dto.getEstado());
         viaje.setIdViaje(id);
         return ResponseEntity.ok(viajeServicio.actualizarViaje(viaje));
     }
