@@ -2,7 +2,6 @@ package utl.org.ldsm504.sakura.CleanDataApi.servicio;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import utl.org.ldsm504.sakura.CleanDataApi.modelo.Camion;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Colonia;
 import utl.org.ldsm504.sakura.CleanDataApi.repositorio.ColoniaRepositorio;
 
@@ -69,7 +68,7 @@ public class ColoniaServicioImp implements ColoniaServicio{
             existente.setCodigoPostal(datos.getCodigoPostal());
 
         if (datos.getLatitud() != null)
-            existente.setLatitud(datos.getLongitud());
+            existente.setLatitud(datos.getLatitud());
 
         if (datos.getLongitud() != null)
             existente.setLongitud(datos.getLongitud());
