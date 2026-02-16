@@ -13,6 +13,7 @@ public interface ViajeServicio {
     void eliminarViaje(Integer id);
     List<Viaje> obtenerPorEstado(EstadoViaje estado);
     List<Viaje> obtenerPorConductor(Integer idConductor);
+    List<Viaje> obtenerPorCamion(Integer idCamion);
     Viaje iniciarViaje(Integer id);
     Viaje finalizarViaje(Integer id);
 }

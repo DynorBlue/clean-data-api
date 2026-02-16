@@ -2,6 +2,7 @@ package utl.org.ldsm504.sakura.CleanDataApi.controlador;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.ViajeDTO;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.*;
@@ -33,6 +34,7 @@ public class ViajeControlador {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public Viaje crear(@RequestBody ViajeDTO dto) {
         Viaje viaje = new Viaje();
@@ -51,26 +53,37 @@ public class ViajeControlador {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONDUCTOR')")
     public List<Viaje> obtenerTodos() {
         return viajeServicio.obtenerTodosViajes();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONDUCTOR')")
     public ResponseEntity<Viaje> obtenerPorId(@PathVariable Integer id) {
         return ResponseEntity.ok(viajeServicio.obtenerViajePorId(id));
     }
 
     @GetMapping("/estado/{estado}")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Viaje> obtenerPorEstado(@PathVariable EstadoViaje estado) {
         return viajeServicio.obtenerPorEstado(estado);
     }
 
     @GetMapping("/conductor/{idConductor}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONDUCTOR')")
     public List<Viaje> obtenerPorConductor(@PathVariable Integer idConductor) {
         return viajeServicio.obtenerPorConductor(idConductor);
     }
 
+    @GetMapping("/camion/{idCamion}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONDUCTOR')")
+    public List<Viaje> obtenerPorCamion(@PathVariable Integer idCamion) {
+        return viajeServicio.obtenerPorCamion(idCamion);
+    }
+
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Viaje> actualizar(@PathVariable Integer id, @RequestBody ViajeDTO dto) {
         Viaje viaje = new Viaje();
         viaje.setCamion(camionRepositorio.findById(dto.getIdCamion())
@@ -89,16 +102,19 @@ public class ViajeControlador {
     }
 
     @PostMapping("/{id}/iniciar")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONDUCTOR')")
     public ResponseEntity<Viaje> iniciarViaje(@PathVariable Integer id) {
         return ResponseEntity.ok(viajeServicio.iniciarViaje(id));
     }
 
     @PostMapping("/{id}/finalizar")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONDUCTOR')")
     public ResponseEntity<Viaje> finalizarViaje(@PathVariable Integer id) {
         return ResponseEntity.ok(viajeServicio.finalizarViaje(id));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Integer id) {
         viajeServicio.eliminarViaje(id);

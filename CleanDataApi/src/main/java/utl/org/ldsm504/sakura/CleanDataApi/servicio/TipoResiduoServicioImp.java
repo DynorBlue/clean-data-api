@@ -51,4 +51,9 @@ public class TipoResiduoServicioImp implements TipoResiduoServicio{
         tipoResiduoRepositorio.deleteById(id);
 
     }
+
+    @Override
+    public List<TipoResiduo> buscarPorNombre(String nombre) {
+        return tipoResiduoRepositorio.findByNombreContainingIgnoreCase(nombre);
+    }
 }

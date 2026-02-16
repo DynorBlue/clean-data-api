@@ -71,6 +71,11 @@ public class ViajeServicioImp implements ViajeServicio {
         return viajeRepositorio.findByConductorIdPersona(idConductor);
     }
 
+    @Override
+    public List<Viaje> obtenerPorCamion(Integer idCamion) {
+        return viajeRepositorio.findByCamionIdCamion(idCamion);
+    }
+
     @Transactional
     @Override
     public Viaje iniciarViaje(Integer id) {

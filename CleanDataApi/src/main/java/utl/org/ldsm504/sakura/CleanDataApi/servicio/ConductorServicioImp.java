@@ -32,14 +32,11 @@ public class ConductorServicioImp implements ConductorServicio {
     @Override
     @Transactional
     public Conductor registrarConductor(Usuario usuario, Persona persona, Conductor conductor) {
-        // Guardar Usuario
         Usuario u = usuarioRepositorio.save(usuario);
 
-        // Asociar Persona con Usuario y guardar
         persona.setUsuario(u);
         Persona p = personaRepositorio.save(persona);
 
-        // Asociar Conductor con Persona y guardar
         conductor.setPersona(p);
 
         return conductorRepositorio.save(conductor);

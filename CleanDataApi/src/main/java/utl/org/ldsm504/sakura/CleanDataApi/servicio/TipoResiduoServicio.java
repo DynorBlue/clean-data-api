@@ -11,5 +11,6 @@ public interface TipoResiduoServicio {
     List<TipoResiduo> obtenerTodosTiposResiduos();
     TipoResiduo actualizarColonia(TipoResiduo tipoResiduo);
     void eliminarTipoResiduo(Integer id);
+    List<TipoResiduo> buscarPorNombre(String nombre);
 
 }

@@ -79,12 +79,10 @@ public class ColoniaServicioImp implements ColoniaServicio{
 
     @Override
     public Colonia buscarPorNombreExacto(String nombre) {
-        // 1. Validar que el nombre no sea nulo ni esté vacío
         if (nombre == null || nombre.trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre de la colonia no puede estar vacío.");
         }
 
-        // 2. Llamar al repositorio y manejar el Optional
         return coloniaRepositorio.findByNombreIgnoreCase(nombre)
                 .orElseThrow(() -> new RuntimeException("No se encontró la colonia con el nombre: " + nombre));
     }
@@ -92,5 +90,10 @@ public class ColoniaServicioImp implements ColoniaServicio{
     @Override
     public List<Colonia> buscarPorNombreContiene(String parteNombre) {
         return coloniaRepositorio.findByNombreContainingIgnoreCase(parteNombre);
+    }
+
+    @Override
+    public List<Colonia> buscarPorCodigoPostal(String cp) {
+        return coloniaRepositorio.findByCodigoPostal(cp);
     }
 }

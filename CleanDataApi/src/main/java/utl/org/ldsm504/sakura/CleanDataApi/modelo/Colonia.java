@@ -25,11 +25,10 @@ public class Colonia {
     @Column(name = "longitud", precision = 10, scale = 7)
     private BigDecimal longitud;
 
-    // Constructor vacío (Requerido por JPA)
+    // Constructor vacío
     public Colonia() {
     }
 
-    // Constructor con parámetros
     public Colonia(String codigoPostal, Integer idColonia, BigDecimal latitud, BigDecimal longitud, String nombre) {
         this.codigoPostal = codigoPostal;
         this.idColonia = idColonia;

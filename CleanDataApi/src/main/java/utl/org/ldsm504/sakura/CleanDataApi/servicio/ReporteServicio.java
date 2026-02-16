@@ -13,4 +13,6 @@ public interface ReporteServicio {
     void eliminarReporte(Integer id);
     List<Reporte> obtenerPorEstado(EstadoReporte estado);
     Reporte cambiarEstado(Integer id, EstadoReporte nuevoEstado);
+    List<Reporte> obtenerPorColonia(Integer idColonia);
+    List<Reporte> obtenerPorUsuario(Integer idUsuario);
 }

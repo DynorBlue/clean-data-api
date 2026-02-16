@@ -36,6 +36,11 @@ public class CamionGPSServicioImp implements CamionGPSServicio {
     }
 
     @Override
+    public java.util.List<CamionGPS> obtenerTodos() {
+        return camionGPSRepositorio.findAll();
+    }
+
+    @Override
     public void eliminarGPS(Integer id) {
         if (!camionGPSRepositorio.existsById(id)) {
             throw new RuntimeException("No existe GPS con id " + id);

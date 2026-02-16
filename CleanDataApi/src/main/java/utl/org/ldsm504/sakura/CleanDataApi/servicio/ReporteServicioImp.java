@@ -71,4 +71,14 @@ public class ReporteServicioImp implements ReporteServicio {
         reporte.setEstado(nuevoEstado);
         return reporteRepositorio.save(reporte);
     }
+
+    @Override
+    public List<Reporte> obtenerPorColonia(Integer idColonia) {
+        return reporteRepositorio.findByColoniaIdColonia(idColonia);
+    }
+
+    @Override
+    public List<Reporte> obtenerPorUsuario(Integer idUsuario) {
+        return reporteRepositorio.findByUsuarioIdUsuario(idUsuario);
+    }
 }

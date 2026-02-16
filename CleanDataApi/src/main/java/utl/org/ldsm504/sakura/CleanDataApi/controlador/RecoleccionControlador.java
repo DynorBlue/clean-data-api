@@ -2,6 +2,7 @@ package utl.org.ldsm504.sakura.CleanDataApi.controlador;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.RecoleccionDTO;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Recoleccion;
@@ -27,6 +28,7 @@ public class RecoleccionControlador {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public Recoleccion crear(@RequestBody RecoleccionDTO dto) {
         Recoleccion recoleccion = new Recoleccion();
@@ -40,21 +42,25 @@ public class RecoleccionControlador {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Recoleccion> obtenerTodos() {
         return recoleccionServicio.obtenerTodasRecolecciones();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Recoleccion> obtenerPorId(@PathVariable Integer id) {
         return ResponseEntity.ok(recoleccionServicio.obtenerRecoleccionPorId(id));
     }
 
     @GetMapping("/viaje/{idViaje}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONDUCTOR')")
     public List<Recoleccion> obtenerPorViaje(@PathVariable Integer idViaje) {
         return recoleccionServicio.obtenerPorViaje(idViaje);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Recoleccion> actualizar(@PathVariable Integer id, @RequestBody RecoleccionDTO dto) {
         Recoleccion recoleccion = new Recoleccion();
         recoleccion.setViaje(viajeRepositorio.findById(dto.getIdViaje())
@@ -68,6 +74,7 @@ public class RecoleccionControlador {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Integer id) {
         recoleccionServicio.eliminarRecoleccion(id);

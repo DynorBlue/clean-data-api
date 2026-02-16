@@ -17,6 +17,6 @@ public interface ColoniaServicio {
     Colonia actualizarColoniaPorId(Integer id, Colonia datos);
     Colonia buscarPorNombreExacto(String nombre);
     List<Colonia> buscarPorNombreContiene(String parteNombre);
-
+    List<Colonia> buscarPorCodigoPostal(String cp);
 
 }
