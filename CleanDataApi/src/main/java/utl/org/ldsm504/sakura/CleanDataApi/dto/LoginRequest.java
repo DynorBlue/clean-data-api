@@ -10,14 +10,14 @@ public class LoginRequest {
     private String email;
 
     @NotBlank(message = "La contraseña es requerida")
-    private String contrasena;
+    private String password;
 
     public LoginRequest() {
     }
 
-    public LoginRequest(String email, String contrasena) {
+    public LoginRequest(String email, String password) {
         this.email = email;
-        this.contrasena = contrasena;
+        this.password = password;
     }
 
     public String getEmail() {
@@ -28,11 +28,11 @@ public class LoginRequest {
         this.email = email;
     }
 
-    public String getContrasena() {
-        return contrasena;
+    public String getPassword() {
+        return password;
     }
 
-    public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

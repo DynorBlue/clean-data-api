@@ -3,6 +3,7 @@ package utl.org.ldsm504.sakura.CleanDataApi.servicio;
 
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Ruta;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface RutaServicio {
@@ -14,4 +15,5 @@ public interface RutaServicio {
 
     List<Ruta> buscarPorNombreContiene(String parteNombre);
     List<Ruta> bucarPorEstadoActivo();
+    Ruta obtenerPorColoniaYFecha(Integer idColonia, LocalDate fecha);
 }

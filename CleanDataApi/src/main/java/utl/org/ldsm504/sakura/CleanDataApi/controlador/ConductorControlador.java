@@ -4,6 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.AuthResponse;
+import utl.org.ldsm504.sakura.CleanDataApi.dto.ConductorDTO;
+import utl.org.ldsm504.sakura.CleanDataApi.dto.PersonaDTO;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.RegistroConductorRequest;
 import utl.org.ldsm504.sakura.CleanDataApi.config.JwtUtil;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.*;
@@ -13,6 +15,7 @@ import utl.org.ldsm504.sakura.CleanDataApi.servicio.ConductorServicio;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/conductores")
@@ -35,7 +38,7 @@ public class ConductorControlador {
 
         Usuario usuario = new Usuario();
         usuario.setEmail(dto.getEmail());
-        usuario.setContrasena(dto.getContrasena());
+        usuario.setContrasena(dto.getPassword());
         usuario.setActivo(true);
         usuario.setTipoUsuario(TipoUsuario.CONDUCTOR);
         usuario.setFechaRegistro(LocalDateTime.now());
@@ -72,20 +75,24 @@ public class ConductorControlador {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public List<Conductor> obtenerTodos() {
-        return conductorServicio.obtenerTodos();
+    public List<ConductorDTO> obtenerTodos() {
+        return conductorServicio.obtenerTodos().stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'CONDUCTOR')")
-    public Conductor obtenerPorId(@PathVariable Integer id) {
-        return conductorServicio.obtenerPorId(id);
+    public ResponseEntity<ConductorDTO> obtenerPorId(@PathVariable Integer id) {
+        return ResponseEntity.ok(toDTO(conductorServicio.obtenerPorId(id)));
     }
 
     @GetMapping("/estado/{estado}")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<Conductor> obtenerPorEstado(@PathVariable EstadoOperativo estado) {
-        return conductorServicio.obtenerPorEstado(estado);
+    public List<ConductorDTO> obtenerPorEstado(@PathVariable EstadoOperativo estado) {
+        return conductorServicio.obtenerPorEstado(estado).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     @PutMapping("/{id}")
@@ -99,5 +106,25 @@ public class ConductorControlador {
     @PreAuthorize("hasRole('ADMIN')")
     public void eliminar(@PathVariable Integer id) {
         conductorServicio.eliminar(id);
+    }
+
+    private ConductorDTO toDTO(Conductor conductor) {
+        PersonaDTO personaDTO = null;
+        if (conductor.getPersona() != null) {
+            personaDTO = new PersonaDTO(
+                    conductor.getPersona().getIdPersona(),
+                    conductor.getPersona().getNombre(),
+                    conductor.getPersona().getTelefono()
+            );
+        }
+
+        return new ConductorDTO(
+                conductor.getIdPersona(),
+                conductor.getLicencia(),
+                conductor.getFechaAlta(),
+                conductor.getFechaBaja(),
+                conductor.getEstadoOperativo(),
+                personaDTO
+        );
     }
 }

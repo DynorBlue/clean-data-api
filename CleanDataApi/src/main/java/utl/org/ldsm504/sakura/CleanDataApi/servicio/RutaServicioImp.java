@@ -4,16 +4,21 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Camion;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Ruta;
+import utl.org.ldsm504.sakura.CleanDataApi.modelo.RutaColonia;
+import utl.org.ldsm504.sakura.CleanDataApi.repositorio.RutaColoniaRepositorio;
 import utl.org.ldsm504.sakura.CleanDataApi.repositorio.RutaRepositorio;
 
+import java.time.LocalDate;
 import java.util.List;
 @Service
 public class RutaServicioImp implements RutaServicio{
 
     private final RutaRepositorio rutaRepositorio;
+    private final RutaColoniaRepositorio rutaColoniaRepositorio;
 
-    public RutaServicioImp(RutaRepositorio rutaRepositorio) {
+    public RutaServicioImp(RutaRepositorio rutaRepositorio, RutaColoniaRepositorio rutaColoniaRepositorio) {
         this.rutaRepositorio = rutaRepositorio;
+        this.rutaColoniaRepositorio = rutaColoniaRepositorio;
     }
 
 
@@ -64,5 +69,12 @@ public class RutaServicioImp implements RutaServicio{
     @Override
     public List<Ruta> bucarPorEstadoActivo() {
         return rutaRepositorio.findByActivaTrue();
+    }
+
+    @Override
+    public Ruta obtenerPorColoniaYFecha(Integer idColonia, LocalDate fecha) {
+        return rutaColoniaRepositorio.findByColoniaIdColoniaAndFechaRecoleccion(idColonia, fecha)
+                .map(RutaColonia::getRuta)
+                .orElse(null);
     }
 }

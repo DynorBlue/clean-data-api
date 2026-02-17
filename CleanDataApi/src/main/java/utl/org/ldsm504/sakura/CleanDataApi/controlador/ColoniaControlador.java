@@ -3,10 +3,12 @@ package utl.org.ldsm504.sakura.CleanDataApi.controlador;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import utl.org.ldsm504.sakura.CleanDataApi.dto.ColoniaDTO;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Colonia;
 import utl.org.ldsm504.sakura.CleanDataApi.servicio.ColoniaServicio;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/colonias")
@@ -26,20 +28,27 @@ public class ColoniaControlador {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'CIUDADANO')")
-    public ResponseEntity<Colonia> obtenerPorId(@PathVariable Integer id) {
-        return ResponseEntity.ok(coloniaServicio.obtenerColoniaPorId(id));
+    public ResponseEntity<ColoniaDTO> obtenerPorId(@PathVariable Integer id) {
+        Colonia colonia = coloniaServicio.obtenerColoniaPorId(id);
+        return ResponseEntity.ok(toDTO(colonia));
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'CIUDADANO')")
-    public ResponseEntity<List<Colonia>> listarTodas() {
-        return ResponseEntity.ok(coloniaServicio.obtenerTodasColonia());
+    public ResponseEntity<List<ColoniaDTO>> listarTodas() {
+        List<ColoniaDTO> dtos = coloniaServicio.obtenerTodasColonia().stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/cp/{cp}")
     @PreAuthorize("hasAnyRole('ADMIN', 'CIUDADANO')")
-    public ResponseEntity<List<Colonia>> buscarPorCodigoPostal(@PathVariable String cp) {
-        return ResponseEntity.ok(coloniaServicio.buscarPorCodigoPostal(cp));
+    public ResponseEntity<List<ColoniaDTO>> buscarPorCodigoPostal(@PathVariable String cp) {
+        List<ColoniaDTO> dtos = coloniaServicio.buscarPorCodigoPostal(cp).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @PutMapping
@@ -66,13 +75,27 @@ public class ColoniaControlador {
 
     @GetMapping("/buscar")
     @PreAuthorize("hasAnyRole('ADMIN', 'CIUDADANO')")
-    public ResponseEntity<Colonia> buscarPorNombre(@RequestParam String nombre) {
-        return ResponseEntity.ok(coloniaServicio.buscarPorNombreExacto(nombre));
+    public ResponseEntity<ColoniaDTO> buscarPorNombre(@RequestParam String nombre) {
+        Colonia colonia = coloniaServicio.buscarPorNombreExacto(nombre);
+        return ResponseEntity.ok(toDTO(colonia));
     }
 
     @GetMapping("/buscar/contiene")
     @PreAuthorize("hasAnyRole('ADMIN', 'CIUDADANO')")
-    public ResponseEntity<List<Colonia>> buscarContiene(@RequestParam String q) {
-        return ResponseEntity.ok(coloniaServicio.buscarPorNombreContiene(q));
+    public ResponseEntity<List<ColoniaDTO>> buscarContiene(@RequestParam String q) {
+        List<ColoniaDTO> dtos = coloniaServicio.buscarPorNombreContiene(q).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
+    private ColoniaDTO toDTO(Colonia colonia) {
+        return new ColoniaDTO(
+                colonia.getIdColonia(),
+                colonia.getNombre(),
+                colonia.getCodigoPostal(),
+                colonia.getLatitud() != null ? colonia.getLatitud().doubleValue() : null,
+                colonia.getLongitud() != null ? colonia.getLongitud().doubleValue() : null
+        );
     }
 }

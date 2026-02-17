@@ -6,7 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import utl.org.ldsm504.sakura.CleanDataApi.dto.ReporteDTO;
+import utl.org.ldsm504.sakura.CleanDataApi.dto.*;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.EstadoReporte;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Reporte;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Usuario;
@@ -14,6 +14,7 @@ import utl.org.ldsm504.sakura.CleanDataApi.repositorio.*;
 import utl.org.ldsm504.sakura.CleanDataApi.servicio.ReporteServicio;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/reportes")
@@ -57,38 +58,48 @@ public class ReporteControlador {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public List<Reporte> obtenerTodos() {
-        return reporteServicio.obtenerTodosReportes();
+    public List<ReporteDTORespuesta> obtenerTodos() {
+        return reporteServicio.obtenerTodosReportes().stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/mis-reportes")
     @PreAuthorize("hasAnyRole('ADMIN', 'CIUDADANO')")
-    public List<Reporte> obtenerMisReportes(@AuthenticationPrincipal UserDetails userDetails) {
+    public List<ReporteDTORespuesta> obtenerMisReportes(@AuthenticationPrincipal UserDetails userDetails) {
         Usuario usuario = usuarioRepo.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         
         if (userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            return reporteServicio.obtenerTodosReportes();
+            return reporteServicio.obtenerTodosReportes().stream()
+                    .map(this::toDTO)
+                    .collect(Collectors.toList());
         }
-        return reporteServicio.obtenerPorUsuario(usuario.getIdUsuario());
+        return reporteServicio.obtenerPorUsuario(usuario.getIdUsuario()).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Reporte> obtenerPorId(@PathVariable Integer id) {
-        return ResponseEntity.ok(reporteServicio.obtenerReportePorId(id));
+    public ResponseEntity<ReporteDTORespuesta> obtenerPorId(@PathVariable Integer id) {
+        return ResponseEntity.ok(toDTO(reporteServicio.obtenerReportePorId(id)));
     }
 
     @GetMapping("/colonia/{idColonia}")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<Reporte> obtenerPorColonia(@PathVariable Integer idColonia) {
-        return reporteServicio.obtenerPorColonia(idColonia);
+    public List<ReporteDTORespuesta> obtenerPorColonia(@PathVariable Integer idColonia) {
+        return reporteServicio.obtenerPorColonia(idColonia).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/estado/{estado}")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<Reporte> obtenerPorEstado(@PathVariable EstadoReporte estado) {
-        return reporteServicio.obtenerPorEstado(estado);
+    public List<ReporteDTORespuesta> obtenerPorEstado(@PathVariable EstadoReporte estado) {
+        return reporteServicio.obtenerPorEstado(estado).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     @PutMapping("/{id}")
@@ -120,5 +131,45 @@ public class ReporteControlador {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Integer id) {
         reporteServicio.eliminarReporte(id);
+    }
+
+    private ReporteDTORespuesta toDTO(Reporte reporte) {
+        UsuarioDTORespuesta usuarioDTO = null;
+        if (reporte.getUsuario() != null) {
+            usuarioDTO = new UsuarioDTORespuesta(
+                    reporte.getUsuario().getIdUsuario(),
+                    reporte.getUsuario().getEmail(),
+                    reporte.getUsuario().getTipoUsuario()
+            );
+        }
+
+        ColoniaDTO coloniaDTO = null;
+        if (reporte.getColonia() != null) {
+            coloniaDTO = new ColoniaDTO(
+                    reporte.getColonia().getIdColonia(),
+                    reporte.getColonia().getNombre(),
+                    reporte.getColonia().getCodigoPostal(),
+                    reporte.getColonia().getLatitud() != null ? reporte.getColonia().getLatitud().doubleValue() : null,
+                    reporte.getColonia().getLongitud() != null ? reporte.getColonia().getLongitud().doubleValue() : null
+            );
+        }
+
+        TipoResiduoDTO tipoResiduoDTO = null;
+        if (reporte.getTipoResiduo() != null) {
+            tipoResiduoDTO = new TipoResiduoDTO(
+                    reporte.getTipoResiduo().getIdTipo(),
+                    reporte.getTipoResiduo().getNombre()
+            );
+        }
+
+        ReporteDTORespuesta dto = new ReporteDTORespuesta();
+        dto.setIdReporte(reporte.getIdReporte());
+        dto.setDescripcion(reporte.getDescripcion());
+        dto.setFecha(reporte.getFecha());
+        dto.setEstado(reporte.getEstado());
+        dto.setUsuario(usuarioDTO);
+        dto.setColonia(coloniaDTO);
+        dto.setTipoResiduo(tipoResiduoDTO);
+        return dto;
     }
 }

@@ -38,7 +38,7 @@ public class AuthController {
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getContrasena())
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
