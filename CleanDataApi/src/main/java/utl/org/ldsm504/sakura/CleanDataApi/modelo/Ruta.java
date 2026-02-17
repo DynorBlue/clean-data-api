@@ -1,6 +1,7 @@
 package utl.org.ldsm504.sakura.CleanDataApi.modelo;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "ruta")
@@ -19,6 +20,9 @@ public class Ruta {
 
     @Column(name = "activa")
     private Boolean activa;
+
+    @OneToMany(mappedBy = "ruta")
+    private List<RutaColonia> colonias;
 
     public Ruta() {
     }
@@ -60,6 +64,14 @@ public class Ruta {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public List<RutaColonia> getColonias() {
+        return colonias;
+    }
+
+    public void setColonias(List<RutaColonia> colonias) {
+        this.colonias = colonias;
     }
 
 }

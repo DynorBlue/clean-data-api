@@ -1,5 +1,6 @@
 package utl.org.ldsm504.sakura.CleanDataApi.servicio;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Camion;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.EstadoCamion;
@@ -31,6 +32,7 @@ public class CamionServicioImp implements CamionServicio{
         return camionRepositorio.findAll();
     }
 
+    @Transactional
     @Override
     public Camion actualizarCamion(Camion camion) {
         if (camion.getIdCamion() == null) {
@@ -51,9 +53,9 @@ public class CamionServicioImp implements CamionServicio{
     @Override
     public void eliminarCamion(Integer id) {
         if (!camionRepositorio.existsById(id)) {
-            throw new RuntimeException("No existe camión con id " + id);
-        }
-        camionRepositorio.deleteById(id);
+                throw new RuntimeException("No existe camión con id " + id);
+            }
+            camionRepositorio.deleteById(id);
     }
 
     @Override
@@ -61,6 +63,7 @@ public class CamionServicioImp implements CamionServicio{
         return camionRepositorio.findByEstado(estadoCamion);
     }
 
+    @Transactional
     @Override
     public Camion actualizarCamionPorId(Integer id, Camion datos) {
         Camion existente = obtenerCamionPorId(id);
