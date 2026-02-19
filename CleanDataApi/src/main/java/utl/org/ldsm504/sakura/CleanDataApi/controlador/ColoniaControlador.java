@@ -34,7 +34,7 @@ public class ColoniaControlador {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'CIUDADANO')")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<ColoniaDTO>> listarTodas() {
         List<ColoniaDTO> dtos = coloniaServicio.obtenerTodasColonia().stream()
                 .map(this::toDTO)
