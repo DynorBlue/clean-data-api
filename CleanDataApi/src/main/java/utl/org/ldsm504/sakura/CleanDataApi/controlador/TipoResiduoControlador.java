@@ -3,10 +3,12 @@ package utl.org.ldsm504.sakura.CleanDataApi.controlador;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import utl.org.ldsm504.sakura.CleanDataApi.dto.TipoResiduoDTO;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.TipoResiduo;
 import utl.org.ldsm504.sakura.CleanDataApi.servicio.TipoResiduoServicio;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tipos-residuo")
@@ -20,32 +22,37 @@ public class TipoResiduoControlador {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<TipoResiduo> crear(@RequestBody TipoResiduo tipoResiduo) {
-        return ResponseEntity.ok(tipoResiduoServicio.crearTipoResiduo(tipoResiduo));
+    public ResponseEntity<TipoResiduoDTO> crear(@RequestBody TipoResiduo tipoResiduo) {
+        return ResponseEntity.ok(toDTO(tipoResiduoServicio.crearTipoResiduo(tipoResiduo)));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'CIUDADANO', 'CONDUCTOR')")
-    public ResponseEntity<TipoResiduo> obtenerPorId(@PathVariable Integer id) {
-        return ResponseEntity.ok(tipoResiduoServicio.obtenerTipoResiduoPorId(id));
+    public ResponseEntity<TipoResiduoDTO> obtenerPorId(@PathVariable Integer id) {
+        return ResponseEntity.ok(toDTO(tipoResiduoServicio.obtenerTipoResiduoPorId(id)));
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'CIUDADANO', 'CONDUCTOR')")
-    public ResponseEntity<List<TipoResiduo>> listarTodos() {
-        return ResponseEntity.ok(tipoResiduoServicio.obtenerTodosTiposResiduos());
+    public ResponseEntity<List<TipoResiduoDTO>> listarTodos() {
+        return ResponseEntity.ok(tipoResiduoServicio.obtenerTodosTiposResiduos().stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList()));
     }
 
     @GetMapping("/buscar")
     @PreAuthorize("hasAnyRole('ADMIN', 'CIUDADANO', 'CONDUCTOR')")
-    public ResponseEntity<List<TipoResiduo>> buscarPorNombre(@RequestParam String q) {
-        return ResponseEntity.ok(tipoResiduoServicio.buscarPorNombre(q));
+    public ResponseEntity<List<TipoResiduoDTO>> buscarPorNombre(@RequestParam String q) {
+        return ResponseEntity.ok(tipoResiduoServicio.buscarPorNombre(q).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList()));
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<TipoResiduo> actualizar(@RequestBody TipoResiduo tipoResiduo) {
-        return ResponseEntity.ok(tipoResiduoServicio.actualizarColonia(tipoResiduo));
+    public ResponseEntity<TipoResiduoDTO> actualizar(@PathVariable Integer id, @RequestBody TipoResiduo tipoResiduo) {
+        tipoResiduo.setIdTipo(id);
+        return ResponseEntity.ok(toDTO(tipoResiduoServicio.actualizarTipoResiduo(tipoResiduo)));
     }
 
     @DeleteMapping("/{id}")
@@ -53,5 +60,12 @@ public class TipoResiduoControlador {
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         tipoResiduoServicio.eliminarTipoResiduo(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private TipoResiduoDTO toDTO(TipoResiduo tipoResiduo) {
+        return new TipoResiduoDTO(
+                tipoResiduo.getIdTipo(),
+                tipoResiduo.getNombre()
+        );
     }
 }

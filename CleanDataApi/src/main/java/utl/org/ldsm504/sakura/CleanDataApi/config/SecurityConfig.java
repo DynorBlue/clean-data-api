@@ -34,7 +34,7 @@ public class SecurityConfig {
         http
             .cors(cors -> cors.configurationSource(request -> {
                 var config = new org.springframework.web.cors.CorsConfiguration();
-                config.addAllowedOriginPattern("*");
+                config.addAllowedOriginPattern("http://localhost:3000");
                 config.addAllowedMethod("*");
                 config.addAllowedHeader("*");
                 config.setAllowCredentials(true);
@@ -43,10 +43,10 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
-                    .requestMatchers("/api/colonias/").permitAll()
+                .requestMatchers("/api/colonias").permitAll()
                 .requestMatchers("/api/ciudadanos/registro").permitAll()
                 .requestMatchers("/api/conductores/registro").permitAll()
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

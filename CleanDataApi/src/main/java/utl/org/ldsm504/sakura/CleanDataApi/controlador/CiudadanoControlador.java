@@ -1,6 +1,7 @@
 package utl.org.ldsm504.sakura.CleanDataApi.controlador;
 
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,7 @@ public class CiudadanoControlador {
     }
 
     @PostMapping("/registro")
-    public ResponseEntity<?> registrar(@RequestBody RegistroCiudadanoRequest dto) {
+    public ResponseEntity<?> registrar(@Valid @RequestBody RegistroCiudadanoRequest dto) {
 
         Colonia colonia = coloniaRepositorio.findById(dto.getIdColonia())
                 .orElseThrow(() -> new RuntimeException("Colonia no existe"));
@@ -73,7 +74,9 @@ public class CiudadanoControlador {
                 token,
                 usuarioGuardado.getEmail(),
                 usuarioGuardado.getTipoUsuario(),
-                usuarioGuardado.getIdUsuario()
+                usuarioGuardado.getIdUsuario(),
+                registrado.getPersona().getNombre(),
+                registrado.getPersona().getIdPersona()
         );
 
         return ResponseEntity.ok(response);
@@ -95,9 +98,9 @@ public class CiudadanoControlador {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Ciudadano actualizar(@PathVariable Integer id,
+    public ResponseEntity<CiudadanoDTO> actualizar(@PathVariable Integer id,
                                 @RequestBody Ciudadano datos) {
-        return ciudadanoServicio.actualizar(id, datos);
+        return ResponseEntity.ok(toDTO(ciudadanoServicio.actualizar(id, datos)));
     }
 
     @DeleteMapping("/{id}")

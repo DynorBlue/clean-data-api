@@ -31,7 +31,7 @@ public class TipoResiduoServicioImp implements TipoResiduoServicio{
     }
     @Transactional
     @Override
-    public TipoResiduo actualizarColonia(TipoResiduo tipoResiduo) {
+    public TipoResiduo actualizarTipoResiduo(TipoResiduo tipoResiduo) {
         if (tipoResiduo.getIdTipo() == null) {
             throw new RuntimeException("El tipo residuo no tiene ID");
         }
