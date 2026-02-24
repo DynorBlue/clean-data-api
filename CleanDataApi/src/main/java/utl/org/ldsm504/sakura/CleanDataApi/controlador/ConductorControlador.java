@@ -1,5 +1,6 @@
 package utl.org.ldsm504.sakura.CleanDataApi.controlador;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,7 @@ public class ConductorControlador {
     }
 
     @PostMapping("/registro")
-    public ResponseEntity<?> registrar(@RequestBody RegistroConductorRequest dto) {
+    public ResponseEntity<?> registrar(@Valid @RequestBody RegistroConductorRequest dto) {
 
         Usuario usuario = new Usuario();
         usuario.setEmail(dto.getEmail());
@@ -67,7 +68,9 @@ public class ConductorControlador {
                 token,
                 usuarioGuardado.getEmail(),
                 usuarioGuardado.getTipoUsuario(),
-                usuarioGuardado.getIdUsuario()
+                usuarioGuardado.getIdUsuario(),
+                registrado.getPersona().getNombre(),
+                registrado.getPersona().getIdPersona()
         );
 
         return ResponseEntity.ok(response);
@@ -97,9 +100,9 @@ public class ConductorControlador {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Conductor actualizar(@PathVariable Integer id,
+    public ResponseEntity<ConductorDTO> actualizar(@PathVariable Integer id,
                                 @RequestBody Conductor datos) {
-        return conductorServicio.actualizar(id, datos);
+        return ResponseEntity.ok(toDTO(conductorServicio.actualizar(id, datos)));
     }
 
     @DeleteMapping("/{id}")
@@ -114,7 +117,10 @@ public class ConductorControlador {
             personaDTO = new PersonaDTO(
                     conductor.getPersona().getIdPersona(),
                     conductor.getPersona().getNombre(),
-                    conductor.getPersona().getTelefono()
+                    conductor.getPersona().getTelefono(),
+                    conductor.getPersona().getUsuario() != null
+                        ? conductor.getPersona().getUsuario().getEmail()
+                            :null
             );
         }
 

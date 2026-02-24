@@ -40,8 +40,8 @@ public class RutaControlador {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Ruta> crear(@RequestBody Ruta ruta) {
-        return ResponseEntity.ok(rutaServicio.crearRuta(ruta));
+    public ResponseEntity<RutaDTO> crear(@RequestBody Ruta ruta) {
+        return ResponseEntity.ok(toDTO(rutaServicio.crearRuta(ruta)));
     }
 
     @GetMapping("/{id}")
@@ -60,10 +60,11 @@ public class RutaControlador {
         return ResponseEntity.ok(dtos);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Ruta> actualizar(@RequestBody Ruta ruta) {
-        return ResponseEntity.ok(rutaServicio.actualizarRuta(ruta));
+    public ResponseEntity<RutaDTO> actualizar(@PathVariable Integer id, @RequestBody Ruta ruta) {
+        ruta.setIdRuta(id);
+        return ResponseEntity.ok(toDTO(rutaServicio.actualizarRuta(ruta)));
     }
 
     @DeleteMapping("/{id}")

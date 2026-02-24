@@ -12,7 +12,9 @@ import utl.org.ldsm504.sakura.CleanDataApi.config.CustomUserDetailsService;
 import utl.org.ldsm504.sakura.CleanDataApi.config.JwtUtil;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.AuthResponse;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.LoginRequest;
+import utl.org.ldsm504.sakura.CleanDataApi.modelo.Persona;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Usuario;
+import utl.org.ldsm504.sakura.CleanDataApi.repositorio.PersonaRepositorio;
 import utl.org.ldsm504.sakura.CleanDataApi.repositorio.UsuarioRepositorio;
 
 @RestController
@@ -23,15 +25,18 @@ public class AuthController {
     private final CustomUserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
     private final UsuarioRepositorio usuarioRepositorio;
+    private final PersonaRepositorio personaRepositorio;
 
     public AuthController(AuthenticationManager authenticationManager,
                          CustomUserDetailsService userDetailsService,
                          JwtUtil jwtUtil,
-                         UsuarioRepositorio usuarioRepositorio) {
+                         UsuarioRepositorio usuarioRepositorio,
+                         PersonaRepositorio personaRepositorio) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
         this.usuarioRepositorio = usuarioRepositorio;
+        this.personaRepositorio = personaRepositorio;
     }
 
     @PostMapping("/login")
@@ -55,11 +60,25 @@ public class AuthController {
                 usuario.getIdUsuario()
         );
 
+        String nombre = null;
+        Integer idPersona = null;
+        try {
+            Persona persona = personaRepositorio.findByUsuarioIdUsuario(usuario.getIdUsuario())
+                    .orElse(null);
+            if (persona != null) {
+                nombre = persona.getNombre();
+                idPersona = persona.getIdPersona();
+            }
+        } catch (Exception e) {
+        }
+
         AuthResponse response = new AuthResponse(
                 token,
                 usuario.getEmail(),
                 usuario.getTipoUsuario(),
-                usuario.getIdUsuario()
+                usuario.getIdUsuario(),
+                nombre,
+                idPersona
         );
 
         return ResponseEntity.ok(response);

@@ -43,10 +43,10 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/colonias").permitAll()
                 .requestMatchers("/api/ciudadanos/registro").permitAll()
                 .requestMatchers("/api/conductores/registro").permitAll()
-                .requestMatchers("/api/**").authenticated()
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

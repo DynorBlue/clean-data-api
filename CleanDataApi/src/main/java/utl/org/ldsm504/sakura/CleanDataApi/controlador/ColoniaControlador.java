@@ -22,8 +22,8 @@ public class ColoniaControlador {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Colonia> crear(@RequestBody Colonia colonia) {
-        return ResponseEntity.ok(coloniaServicio.crearColonia(colonia));
+    public ResponseEntity<ColoniaDTO> crear(@RequestBody Colonia colonia) {
+        return ResponseEntity.ok(toDTO(coloniaServicio.crearColonia(colonia)));
     }
 
     @GetMapping("/{id}")
@@ -34,7 +34,7 @@ public class ColoniaControlador {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'CIUDADANO')")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<ColoniaDTO>> listarTodas() {
         List<ColoniaDTO> dtos = coloniaServicio.obtenerTodasColonia().stream()
                 .map(this::toDTO)
@@ -51,19 +51,20 @@ public class ColoniaControlador {
         return ResponseEntity.ok(dtos);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Colonia> actualizar(@RequestBody Colonia colonia) {
-        return ResponseEntity.ok(coloniaServicio.actualizarColonia(colonia));
+    public ResponseEntity<ColoniaDTO> actualizar(@PathVariable Integer id, @RequestBody Colonia colonia) {
+        colonia.setIdColonia(id);
+        return ResponseEntity.ok(toDTO(coloniaServicio.actualizarColonia(colonia)));
     }
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Colonia> actualizarPorId(
+    public ResponseEntity<ColoniaDTO> actualizarPorId(
             @PathVariable Integer id,
             @RequestBody Colonia datos
     ) {
-        return ResponseEntity.ok(coloniaServicio.actualizarColoniaPorId(id, datos));
+        return ResponseEntity.ok(toDTO(coloniaServicio.actualizarColoniaPorId(id, datos)));
     }
 
     @DeleteMapping("/{id}")

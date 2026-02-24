@@ -1,21 +1,35 @@
 package utl.org.ldsm504.sakura.CleanDataApi.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDate;
 
 public class RegistroConductorRequest {
+    
+    @NotBlank(message = "El email es requerido")
+    @Email(message = "Formato de email inválido")
     private String email;
+
+    @NotBlank(message = "La contraseña es requerida")
+    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     private String password;
 
+    @NotBlank(message = "El nombre es requerido")
+    @Size(max = 120)
     private String nombre;
+
+    @Size(max = 20)
     private String telefono;
 
-    private Integer idColonia;
-    private String direccionCalle;
-
+    @NotBlank(message = "La licencia es requerida")
+    @Size(max = 50)
     private String licencia;
+
     private LocalDate fechaAlta;
 
-    // getters y setters
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
@@ -27,12 +41,6 @@ public class RegistroConductorRequest {
 
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
-
-    public Integer getIdColonia() { return idColonia; }
-    public void setIdColonia(Integer idColonia) { this.idColonia = idColonia; }
-
-    public String getDireccionCalle() { return direccionCalle; }
-    public void setDireccionCalle(String direccionCalle) { this.direccionCalle = direccionCalle; }
 
     public String getLicencia() { return licencia; }
     public void setLicencia(String licencia) { this.licencia = licencia; }

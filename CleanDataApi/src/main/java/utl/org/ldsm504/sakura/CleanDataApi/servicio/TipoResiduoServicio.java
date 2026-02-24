@@ -9,7 +9,7 @@ public interface TipoResiduoServicio {
     TipoResiduo crearTipoResiduo(TipoResiduo tipoResiduo);
     TipoResiduo obtenerTipoResiduoPorId(Integer id);
     List<TipoResiduo> obtenerTodosTiposResiduos();
-    TipoResiduo actualizarColonia(TipoResiduo tipoResiduo);
+    TipoResiduo actualizarTipoResiduo(TipoResiduo tipoResiduo);
     void eliminarTipoResiduo(Integer id);
     List<TipoResiduo> buscarPorNombre(String nombre);
 

@@ -24,24 +24,21 @@ public class ReporteControlador {
     private final UsuarioRepositorio usuarioRepositorio;
     private final ColoniaRepositorio coloniaRepositorio;
     private final TipoResiduoRepositorio tipoResiduoRepositorio;
-    private final UsuarioRepositorio usuarioRepo;
 
     public ReporteControlador(ReporteServicio reporteServicio,
                               UsuarioRepositorio usuarioRepositorio,
                               ColoniaRepositorio coloniaRepositorio,
-                              TipoResiduoRepositorio tipoResiduoRepositorio,
-                              UsuarioRepositorio usuarioRepo) {
+                              TipoResiduoRepositorio tipoResiduoRepositorio) {
         this.reporteServicio = reporteServicio;
         this.usuarioRepositorio = usuarioRepositorio;
         this.coloniaRepositorio = coloniaRepositorio;
         this.tipoResiduoRepositorio = tipoResiduoRepositorio;
-        this.usuarioRepo = usuarioRepositorio;
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'CIUDADANO')")
     @ResponseStatus(HttpStatus.CREATED)
-    public Reporte crear(@RequestBody ReporteDTO dto) {
+    public ReporteDTORespuesta crear(@RequestBody ReporteDTO dto) {
         Reporte reporte = new Reporte();
         reporte.setUsuario(usuarioRepositorio.findById(dto.getIdUsuario())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id " + dto.getIdUsuario())));
@@ -53,7 +50,7 @@ public class ReporteControlador {
         }
         reporte.setDescripcion(dto.getDescripcion());
         reporte.setEstado(EstadoReporte.PENDIENTE);
-        return reporteServicio.crearReporte(reporte);
+        return toDTO(reporteServicio.crearReporte(reporte));
     }
 
     @GetMapping
@@ -67,7 +64,7 @@ public class ReporteControlador {
     @GetMapping("/mis-reportes")
     @PreAuthorize("hasAnyRole('ADMIN', 'CIUDADANO')")
     public List<ReporteDTORespuesta> obtenerMisReportes(@AuthenticationPrincipal UserDetails userDetails) {
-        Usuario usuario = usuarioRepo.findByEmail(userDetails.getUsername())
+        Usuario usuario = usuarioRepositorio.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         
         if (userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
@@ -104,7 +101,7 @@ public class ReporteControlador {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Reporte> actualizar(@PathVariable Integer id, @RequestBody ReporteDTO dto) {
+    public ResponseEntity<ReporteDTORespuesta> actualizar(@PathVariable Integer id, @RequestBody ReporteDTO dto) {
         Reporte reporte = new Reporte();
         reporte.setUsuario(usuarioRepositorio.findById(dto.getIdUsuario())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id " + dto.getIdUsuario())));
@@ -117,13 +114,13 @@ public class ReporteControlador {
         reporte.setDescripcion(dto.getDescripcion());
         reporte.setEstado(dto.getEstado());
         reporte.setIdReporte(id);
-        return ResponseEntity.ok(reporteServicio.actualizarReporte(reporte));
+        return ResponseEntity.ok(toDTO(reporteServicio.actualizarReporte(reporte)));
     }
 
     @PatchMapping("/{id}/estado/{estado}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Reporte> cambiarEstado(@PathVariable Integer id, @PathVariable EstadoReporte estado) {
-        return ResponseEntity.ok(reporteServicio.cambiarEstado(id, estado));
+    public ResponseEntity<ReporteDTORespuesta> cambiarEstado(@PathVariable Integer id, @PathVariable EstadoReporte estado) {
+        return ResponseEntity.ok(toDTO(reporteServicio.cambiarEstado(id, estado)));
     }
 
     @DeleteMapping("/{id}")

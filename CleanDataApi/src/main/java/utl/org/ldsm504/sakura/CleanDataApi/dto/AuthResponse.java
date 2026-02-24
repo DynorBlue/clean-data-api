@@ -8,15 +8,19 @@ public class AuthResponse {
     private String email;
     private TipoUsuario tipoUsuario;
     private Integer idUsuario;
+    private String nombre;
+    private Integer idPersona;
 
     public AuthResponse() {
     }
 
-    public AuthResponse(String token, String email, TipoUsuario tipoUsuario, Integer idUsuario) {
+    public AuthResponse(String token, String email, TipoUsuario tipoUsuario, Integer idUsuario, String nombre, Integer idPersona) {
         this.token = token;
         this.email = email;
         this.tipoUsuario = tipoUsuario;
         this.idUsuario = idUsuario;
+        this.nombre = nombre;
+        this.idPersona = idPersona;
     }
 
     public String getToken() {
@@ -49,5 +53,21 @@ public class AuthResponse {
 
     public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public Integer getIdPersona() {
+        return idPersona;
+    }
+
+    public void setIdPersona(Integer idPersona) {
+        this.idPersona = idPersona;
     }
 }
