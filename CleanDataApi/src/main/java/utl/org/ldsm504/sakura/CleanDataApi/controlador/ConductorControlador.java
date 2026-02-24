@@ -117,7 +117,10 @@ public class ConductorControlador {
             personaDTO = new PersonaDTO(
                     conductor.getPersona().getIdPersona(),
                     conductor.getPersona().getNombre(),
-                    conductor.getPersona().getTelefono()
+                    conductor.getPersona().getTelefono(),
+                    conductor.getPersona().getUsuario() != null
+                        ? conductor.getPersona().getUsuario().getEmail()
+                            :null
             );
         }
 
