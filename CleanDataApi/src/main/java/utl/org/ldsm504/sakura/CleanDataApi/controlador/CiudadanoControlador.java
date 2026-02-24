@@ -115,7 +115,10 @@ public class CiudadanoControlador {
             personaDTO = new PersonaDTO(
                     ciudadano.getPersona().getIdPersona(),
                     ciudadano.getPersona().getNombre(),
-                    ciudadano.getPersona().getTelefono()
+                    ciudadano.getPersona().getTelefono(),
+                    ciudadano.getPersona().getUsuario() != null
+                            ? ciudadano.getPersona().getUsuario().getEmail()
+                            : null
             );
         }
 
