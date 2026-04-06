@@ -10,4 +10,5 @@ public interface ReporteRepositorio extends JpaRepository<Reporte, Integer> {
     List<Reporte> findByEstado(EstadoReporte estado);
     List<Reporte> findByUsuarioIdUsuario(Integer idUsuario);
     List<Reporte> findByColoniaIdColonia(Integer idColonia);
+    long countByColoniaIdColonia(Integer idColonia);
 }

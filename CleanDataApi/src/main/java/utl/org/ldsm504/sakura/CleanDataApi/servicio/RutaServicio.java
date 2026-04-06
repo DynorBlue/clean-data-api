@@ -1,6 +1,7 @@
 package utl.org.ldsm504.sakura.CleanDataApi.servicio;
 
 
+import utl.org.ldsm504.sakura.CleanDataApi.dto.RutaDependenciasDTO;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Ruta;
 
 import java.time.LocalDate;
@@ -16,4 +17,7 @@ public interface RutaServicio {
     List<Ruta> buscarPorNombreContiene(String parteNombre);
     List<Ruta> bucarPorEstadoActivo();
     Ruta obtenerPorColoniaYFecha(Integer idColonia, LocalDate fecha);
+
+    RutaDependenciasDTO verificarDependencias(Integer id);
+    boolean puedeEliminarse(Integer id);
 }

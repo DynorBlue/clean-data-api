@@ -1,5 +1,6 @@
 package utl.org.ldsm504.sakura.CleanDataApi.controlador;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -7,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import utl.org.ldsm504.sakura.CleanDataApi.config.JwtUtil;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.ResiduoDiaDTO;
+import utl.org.ldsm504.sakura.CleanDataApi.dto.RutaDependenciasDTO;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.RutaDTO;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Ciudadano;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Ruta;
@@ -67,9 +69,19 @@ public class RutaControlador {
         return ResponseEntity.ok(toDTO(rutaServicio.actualizarRuta(ruta)));
     }
 
+    @GetMapping("/{id}/dependencias")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<RutaDependenciasDTO> verificarDependencias(@PathVariable Integer id) {
+        return ResponseEntity.ok(rutaServicio.verificarDependencias(id));
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+    public ResponseEntity<?> eliminar(@PathVariable Integer id) {
+        if (!rutaServicio.puedeEliminarse(id)) {
+            RutaDependenciasDTO deps = rutaServicio.verificarDependencias(id);
+            return ResponseEntity.badRequest().body(deps);
+        }
         rutaServicio.eliminarRuta(id);
         return ResponseEntity.noContent().build();
     }

@@ -15,4 +15,6 @@ public interface ViajeRepositorio extends JpaRepository<Viaje, Integer> {
 
     @Query("SELECT v FROM Viaje v JOIN v.ruta r JOIN r.colonias rc WHERE rc.colonia.idColonia = :idColonia")
     List<Viaje> findByColoniaIdColonia(@Param("idColonia") Integer idColonia);
+
+    List<Viaje> findByRutaIdRuta(Integer idRuta);
 }

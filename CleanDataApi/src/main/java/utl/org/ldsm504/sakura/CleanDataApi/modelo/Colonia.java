@@ -24,7 +24,6 @@ public class Colonia {
     @Column(name = "longitud", precision = 10, scale = 7)
     private BigDecimal longitud;
 
-    // Constructor vacío
     public Colonia() {
     }
 
@@ -36,7 +35,6 @@ public class Colonia {
         this.nombre = nombre;
     }
 
-    // Getters y Setters
     public String getCodigoPostal() {
         return codigoPostal;
     }
@@ -77,40 +75,3 @@ public class Colonia {
         this.nombre = nombre;
     }
 }
-// ---------------------------------------
-//@Entity
-//@Table(name = "colonia")
-//public class Colonia {
-//
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "id_colonia")
-//    private Integer idColonia;
-//
-//    @Column(nullable = false, length = 150)
-//    private String nombre;
-//
-//    public Colonia() {
-//    }
-//
-//    public Colonia(String nombre) {
-//        this.nombre = nombre;
-//    }
-//
-//    public Integer getIdColonia() {
-//        return idColonia;
-//    }
-//
-//    public void setIdColonia(Integer idColonia) {
-//        this.idColonia = idColonia;
-//    }
-//
-//    public String getNombre() {
-//        return nombre;
-//    }
-//
-//    public void setNombre(String nombre) {
-//        this.nombre = nombre;
-//    }
-//}
-

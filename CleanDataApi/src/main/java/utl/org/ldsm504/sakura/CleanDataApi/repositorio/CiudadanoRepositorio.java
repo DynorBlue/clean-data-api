@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface CiudadanoRepositorio extends JpaRepository<Ciudadano, Integer> {
     @Query("SELECT c FROM Ciudadano c WHERE c.persona.usuario.idUsuario = :idUsuario")
     Optional<Ciudadano> findByPersonaUsuarioIdUsuario(@Param("idUsuario") Integer idUsuario);
+    
+    long countByColoniaIdColonia(Integer idColonia);
 }

@@ -3,6 +3,7 @@ package utl.org.ldsm504.sakura.CleanDataApi.controlador;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import utl.org.ldsm504.sakura.CleanDataApi.dto.ColoniaDependenciasDTO;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.ColoniaDTO;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Colonia;
 import utl.org.ldsm504.sakura.CleanDataApi.servicio.ColoniaServicio;
@@ -67,9 +68,19 @@ public class ColoniaControlador {
         return ResponseEntity.ok(toDTO(coloniaServicio.actualizarColoniaPorId(id, datos)));
     }
 
+    @GetMapping("/{id}/dependencias")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ColoniaDependenciasDTO> verificarDependencias(@PathVariable Integer id) {
+        return ResponseEntity.ok(coloniaServicio.verificarDependencias(id));
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+    public ResponseEntity<?> eliminar(@PathVariable Integer id) {
+        if (!coloniaServicio.puedeEliminarse(id)) {
+            ColoniaDependenciasDTO deps = coloniaServicio.verificarDependencias(id);
+            return ResponseEntity.badRequest().body(deps);
+        }
         coloniaServicio.eliminarColonia(id);
         return ResponseEntity.noContent().build();
     }
