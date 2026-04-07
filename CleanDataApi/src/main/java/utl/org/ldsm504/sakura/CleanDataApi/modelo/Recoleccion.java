@@ -28,7 +28,7 @@ public class Recoleccion {
     @Column(name = "peso_kg", precision = 10, scale = 2)
     private BigDecimal pesoKg;
 
-    @Column(name = "fecha_registro", insertable = false, updatable = false)
+    @Column(name = "fecha_registro")
     private LocalDateTime fechaRegistro;
 
     public Recoleccion() {

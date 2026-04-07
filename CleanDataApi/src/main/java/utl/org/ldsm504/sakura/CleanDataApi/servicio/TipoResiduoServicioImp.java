@@ -1,0 +1,59 @@
+package utl.org.ldsm504.sakura.CleanDataApi.servicio;
+
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+import utl.org.ldsm504.sakura.CleanDataApi.modelo.TipoResiduo;
+import utl.org.ldsm504.sakura.CleanDataApi.repositorio.TipoResiduoRepositorio;
+
+import java.util.List;
+@Service
+public class TipoResiduoServicioImp implements TipoResiduoServicio{
+    private final TipoResiduoRepositorio tipoResiduoRepositorio;
+
+    public TipoResiduoServicioImp(TipoResiduoRepositorio tipoResiduoRepositorio) {
+        this.tipoResiduoRepositorio = tipoResiduoRepositorio;
+    }
+
+    @Override
+    public TipoResiduo crearTipoResiduo(TipoResiduo tipoResiduo) {
+        return tipoResiduoRepositorio.save(tipoResiduo);
+    }
+
+    @Override
+    public TipoResiduo obtenerTipoResiduoPorId(Integer id) {
+        return tipoResiduoRepositorio.
+                findById(id).orElseThrow(() -> new RuntimeException("Tipo residuo no encontrado con id " + id));
+    }
+
+    @Override
+    public List<TipoResiduo> obtenerTodosTiposResiduos() {
+        return tipoResiduoRepositorio.findAll();
+    }
+    @Transactional
+    @Override
+    public TipoResiduo actualizarTipoResiduo(TipoResiduo tipoResiduo) {
+        if (tipoResiduo.getIdTipo() == null) {
+            throw new RuntimeException("El tipo residuo no tiene ID");
+        }
+
+        TipoResiduo existente = obtenerTipoResiduoPorId(tipoResiduo.getIdTipo());
+
+        existente.setNombre(tipoResiduo.getNombre());
+
+        return tipoResiduoRepositorio.save(existente);
+    }
+
+    @Override
+    public void eliminarTipoResiduo(Integer id) {
+        if (!tipoResiduoRepositorio.existsById(id)) {
+            throw new RuntimeException("No existe el tipo de residuo con el id " + id);
+        }
+        tipoResiduoRepositorio.deleteById(id);
+
+    }
+
+    @Override
+    public List<TipoResiduo> buscarPorNombre(String nombre) {
+        return tipoResiduoRepositorio.findByNombreContainingIgnoreCase(nombre);
+    }
+}
