@@ -9,6 +9,7 @@ import utl.org.ldsm504.sakura.CleanDataApi.modelo.Recoleccion;
 import utl.org.ldsm504.sakura.CleanDataApi.repositorio.*;
 import utl.org.ldsm504.sakura.CleanDataApi.servicio.RecoleccionServicio;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +40,7 @@ public class RecoleccionControlador {
                 .orElseThrow(() -> new RuntimeException("TipoResiduo no encontrado con id " + dto.getIdTipoResiduo())));
         recoleccion.setVolumenM3(dto.getVolumenM3());
         recoleccion.setPesoKg(dto.getPesoKg());
+        recoleccion.setFechaRegistro(dto.getFechaRegistro() != null ? dto.getFechaRegistro() : LocalDateTime.now());
         return ResponseEntity.ok(toDTO(recoleccionServicio.crearRecoleccion(recoleccion)));
     }
 
@@ -75,6 +77,7 @@ public class RecoleccionControlador {
         recoleccion.setVolumenM3(dto.getVolumenM3());
         recoleccion.setPesoKg(dto.getPesoKg());
         recoleccion.setIdRecoleccion(id);
+        recoleccion.setFechaRegistro(dto.getFechaRegistro() != null ? dto.getFechaRegistro() : LocalDateTime.now());
         return ResponseEntity.ok(toDTO(recoleccionServicio.actualizarRecoleccion(recoleccion)));
     }
 

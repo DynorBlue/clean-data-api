@@ -44,6 +44,7 @@ public class RecoleccionServicioImp implements RecoleccionServicio {
         existente.setTipoResiduo(recoleccion.getTipoResiduo());
         existente.setVolumenM3(recoleccion.getVolumenM3());
         existente.setPesoKg(recoleccion.getPesoKg());
+        existente.setFechaRegistro(recoleccion.getFechaRegistro());
 
         return recoleccionRepositorio.save(existente);
     }
