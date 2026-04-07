@@ -1,5 +1,6 @@
 package utl.org.ldsm504.sakura.CleanDataApi.servicio;
 
+import utl.org.ldsm504.sakura.CleanDataApi.dto.ConductorUpdateRequest;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Conductor;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.EstadoOperativo;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Persona;
@@ -17,7 +18,7 @@ public interface ConductorServicio {
 
         List<Conductor> obtenerPorEstado(EstadoOperativo estado);
 
-        Conductor actualizar(Integer id, Conductor datos);
+        Conductor actualizar(Integer id, ConductorUpdateRequest dto);
 
         void eliminar(Integer id);
 }

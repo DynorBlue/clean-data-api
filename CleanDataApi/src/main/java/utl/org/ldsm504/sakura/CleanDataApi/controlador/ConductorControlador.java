@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.AuthResponse;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.ConductorDTO;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.PersonaDTO;
+import utl.org.ldsm504.sakura.CleanDataApi.dto.ConductorUpdateRequest;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.RegistroConductorRequest;
 import utl.org.ldsm504.sakura.CleanDataApi.config.JwtUtil;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.*;
@@ -101,8 +102,8 @@ public class ConductorControlador {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ConductorDTO> actualizar(@PathVariable Integer id,
-                                @RequestBody Conductor datos) {
-        return ResponseEntity.ok(toDTO(conductorServicio.actualizar(id, datos)));
+                                @Valid @RequestBody ConductorUpdateRequest dto) {
+        return ResponseEntity.ok(toDTO(conductorServicio.actualizar(id, dto)));
     }
 
     @DeleteMapping("/{id}")

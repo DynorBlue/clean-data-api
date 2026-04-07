@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.AuthResponse;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.CiudadanoDTO;
+import utl.org.ldsm504.sakura.CleanDataApi.dto.CiudadanoUpdateRequest;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.ColoniaDTO;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.PersonaDTO;
 import utl.org.ldsm504.sakura.CleanDataApi.dto.RegistroCiudadanoRequest;
@@ -99,8 +100,8 @@ public class CiudadanoControlador {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CiudadanoDTO> actualizar(@PathVariable Integer id,
-                                @RequestBody Ciudadano datos) {
-        return ResponseEntity.ok(toDTO(ciudadanoServicio.actualizar(id, datos)));
+                                @Valid @RequestBody CiudadanoUpdateRequest dto) {
+        return ResponseEntity.ok(toDTO(ciudadanoServicio.actualizar(id, dto)));
     }
 
     @DeleteMapping("/{id}")

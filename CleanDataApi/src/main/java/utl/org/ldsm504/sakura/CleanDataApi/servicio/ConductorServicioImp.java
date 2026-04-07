@@ -2,6 +2,7 @@ package utl.org.ldsm504.sakura.CleanDataApi.servicio;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import utl.org.ldsm504.sakura.CleanDataApi.dto.ConductorUpdateRequest;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Conductor;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.EstadoOperativo;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Persona;
@@ -59,21 +60,30 @@ public class ConductorServicioImp implements ConductorServicio {
 
     @Override
     @Transactional
-    public Conductor actualizar(Integer id, Conductor datos) {
+    public Conductor actualizar(Integer id, ConductorUpdateRequest dto) {
 
         Conductor existente = obtenerPorId(id);
 
-        if (datos.getLicencia() != null)
-            existente.setLicencia(datos.getLicencia());
+        if (dto.getLicencia() != null)
+            existente.setLicencia(dto.getLicencia());
 
-        if (datos.getFechaAlta() != null)
-            existente.setFechaAlta(datos.getFechaAlta());
+        if (dto.getFechaAlta() != null)
+            existente.setFechaAlta(dto.getFechaAlta());
 
-        if (datos.getFechaBaja() != null)
-            existente.setFechaBaja(datos.getFechaBaja());
+        if (dto.getFechaBaja() != null)
+            existente.setFechaBaja(dto.getFechaBaja());
 
-        if (datos.getEstadoOperativo() != null)
-            existente.setEstadoOperativo(datos.getEstadoOperativo());
+        if (dto.getEstadoOperativo() != null)
+            existente.setEstadoOperativo(dto.getEstadoOperativo());
+
+        Persona personaExistente = existente.getPersona();
+        if (dto.getNombre() != null) {
+            personaExistente.setNombre(dto.getNombre());
+        }
+        if (dto.getTelefono() != null) {
+            personaExistente.setTelefono(dto.getTelefono());
+        }
+        personaRepositorio.save(personaExistente);
 
         return conductorRepositorio.save(existente);
     }
