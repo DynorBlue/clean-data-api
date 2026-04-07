@@ -4,16 +4,22 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Camion;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.EstadoCamion;
+import utl.org.ldsm504.sakura.CleanDataApi.repositorio.CamionGPSRepositorio;
 import utl.org.ldsm504.sakura.CleanDataApi.repositorio.CamionRepositorio;
+import utl.org.ldsm504.sakura.CleanDataApi.repositorio.ViajeRepositorio;
 
 import java.util.List;
 @Service
 public class CamionServicioImp implements CamionServicio{
 
     private final CamionRepositorio camionRepositorio;
+    private final ViajeRepositorio viajeRepositorio;
+    private final CamionGPSRepositorio camionGPSRepositorio;
 
-    public CamionServicioImp(CamionRepositorio camionRepositorio) {
+    public CamionServicioImp(CamionRepositorio camionRepositorio, ViajeRepositorio viajeRepositorio, CamionGPSRepositorio camionGPSRepositorio) {
         this.camionRepositorio = camionRepositorio;
+        this.viajeRepositorio = viajeRepositorio;
+        this.camionGPSRepositorio = camionGPSRepositorio;
     }
 
     @Override
@@ -53,9 +59,15 @@ public class CamionServicioImp implements CamionServicio{
     @Override
     public void eliminarCamion(Integer id) {
         if (!camionRepositorio.existsById(id)) {
-                throw new RuntimeException("No existe camión con id " + id);
-            }
-            camionRepositorio.deleteById(id);
+            throw new RuntimeException("No existe camión con id " + id);
+        }
+        if (viajeRepositorio.existsByCamionIdCamion(id)) {
+            throw new RuntimeException("No se puede eliminar el camión porque está asociado a uno o más viajes");
+        }
+        if (camionGPSRepositorio.existsByCamionIdCamion(id)) {
+            throw new RuntimeException("No se puede eliminar el camión porque está asociado a un dispositivo GPS");
+        }
+        camionRepositorio.deleteById(id);
     }
 
     @Override

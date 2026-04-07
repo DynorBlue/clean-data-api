@@ -17,4 +17,6 @@ public interface ViajeRepositorio extends JpaRepository<Viaje, Integer> {
     List<Viaje> findByColoniaIdColonia(@Param("idColonia") Integer idColonia);
 
     List<Viaje> findByRutaIdRuta(Integer idRuta);
+    boolean existsByCamionIdCamion(Integer idCamion);
+    boolean existsByRutaIdRuta(Integer idRuta);
 }

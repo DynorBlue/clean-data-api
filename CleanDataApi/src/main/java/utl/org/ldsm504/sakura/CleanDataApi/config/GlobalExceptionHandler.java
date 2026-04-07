@@ -1,5 +1,6 @@
 package utl.org.ldsm504.sakura.CleanDataApi.config;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -27,6 +28,35 @@ public class GlobalExceptionHandler {
         response.put("detalles", errores);
         
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("error", ex.getMessage() != null ? ex.getMessage() : "Parámetro inválido"));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        String mensaje = ex.getMostSpecificCause().getMessage();
+        String errorMostrar;
+        
+        if (mensaje != null && mensaje.contains("FOREIGN KEY")) {
+            if (mensaje.contains("recoleccion")) {
+                errorMostrar = "No se puede eliminar porque tiene recolecciones asociadas";
+            } else if (mensaje.contains("camion")) {
+                errorMostrar = "No se puede eliminar porque está asociado a uno o más viajes";
+            } else if (mensaje.contains("ruta")) {
+                errorMostrar = "No se puede eliminar porque está asociada a uno o más viajes";
+            } else {
+                errorMostrar = "No se puede eliminar porque está siendo utilizado en otros registros";
+            }
+        } else {
+            errorMostrar = "Violación de integridad de datos";
+        }
+        
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Map.of("error", errorMostrar));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -57,7 +87,7 @@ public class GlobalExceptionHandler {
         }
         
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("error", "Error interno del servidor"));
+                .body(Map.of("error", mensaje != null ? mensaje : "Error interno del servidor"));
     }
 
     @ExceptionHandler(Exception.class)

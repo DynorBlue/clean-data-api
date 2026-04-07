@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.EstadoViaje;
 import utl.org.ldsm504.sakura.CleanDataApi.modelo.Viaje;
+import utl.org.ldsm504.sakura.CleanDataApi.repositorio.RecoleccionRepositorio;
 import utl.org.ldsm504.sakura.CleanDataApi.repositorio.ViajeRepositorio;
 
 import java.time.LocalDateTime;
@@ -13,13 +14,27 @@ import java.util.List;
 public class ViajeServicioImp implements ViajeServicio {
 
     private final ViajeRepositorio viajeRepositorio;
+    private final RecoleccionRepositorio recoleccionRepositorio;
 
-    public ViajeServicioImp(ViajeRepositorio viajeRepositorio) {
+    public ViajeServicioImp(ViajeRepositorio viajeRepositorio, RecoleccionRepositorio recoleccionRepositorio) {
         this.viajeRepositorio = viajeRepositorio;
+        this.recoleccionRepositorio = recoleccionRepositorio;
     }
 
     @Override
     public Viaje crearViaje(Viaje viaje) {
+        if (viaje.getCamion() == null) {
+            throw new RuntimeException("El camión es requerido");
+        }
+        if (viaje.getConductor() == null) {
+            throw new RuntimeException("El conductor es requerido");
+        }
+        if (viaje.getRuta() == null) {
+            throw new RuntimeException("La ruta es requerida");
+        }
+        if (viaje.getTipoResiduo() == null) {
+            throw new RuntimeException("El tipo de residuo es requerido");
+        }
         return viajeRepositorio.save(viaje);
     }
 
@@ -57,6 +72,9 @@ public class ViajeServicioImp implements ViajeServicio {
     public void eliminarViaje(Integer id) {
         if (!viajeRepositorio.existsById(id)) {
             throw new RuntimeException("No existe viaje con id " + id);
+        }
+        if (recoleccionRepositorio.existsByViajeIdViaje(id)) {
+            throw new RuntimeException("No se puede eliminar el viaje porque tiene recolecciones asociadas");
         }
         viajeRepositorio.deleteById(id);
     }

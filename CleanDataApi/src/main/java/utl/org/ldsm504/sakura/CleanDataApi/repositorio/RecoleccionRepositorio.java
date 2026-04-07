@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface RecoleccionRepositorio extends JpaRepository<Recoleccion, Integer> {
     List<Recoleccion> findByViajeIdViaje(Integer idViaje);
+    boolean existsByViajeIdViaje(Integer idViaje);
 }

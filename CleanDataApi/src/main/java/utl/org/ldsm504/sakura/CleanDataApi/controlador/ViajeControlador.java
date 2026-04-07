@@ -40,7 +40,19 @@ public class ViajeControlador {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public Viaje crear(@RequestBody ViajeDTO dto) {
+    public ViajeDTORespuesta crear(@RequestBody ViajeDTO dto) {
+        if (dto.getIdCamion() == null) {
+            throw new RuntimeException("El ID del camión es requerido");
+        }
+        if (dto.getIdConductor() == null) {
+            throw new RuntimeException("El ID del conductor es requerido");
+        }
+        if (dto.getIdRuta() == null) {
+            throw new RuntimeException("El ID de la ruta es requerido");
+        }
+        if (dto.getIdTipoResiduo() == null) {
+            throw new RuntimeException("El ID del tipo de residuo es requerido");
+        }
         Viaje viaje = new Viaje();
         viaje.setCamion(camionRepositorio.findById(dto.getIdCamion())
                 .orElseThrow(() -> new RuntimeException("Camion no encontrado con id " + dto.getIdCamion())));
@@ -53,7 +65,7 @@ public class ViajeControlador {
         viaje.setFechaInicio(dto.getFechaInicio());
         viaje.setFechaFin(dto.getFechaFin());
         viaje.setEstado(dto.getEstado());
-        return viajeServicio.crearViaje(viaje);
+        return toDTO(viajeServicio.crearViaje(viaje));
     }
 
     @GetMapping
@@ -104,7 +116,19 @@ public class ViajeControlador {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Viaje> actualizar(@PathVariable Integer id, @RequestBody ViajeDTO dto) {
+    public ResponseEntity<ViajeDTORespuesta> actualizar(@PathVariable Integer id, @RequestBody ViajeDTO dto) {
+        if (dto.getIdCamion() == null) {
+            throw new RuntimeException("El ID del camión es requerido");
+        }
+        if (dto.getIdConductor() == null) {
+            throw new RuntimeException("El ID del conductor es requerido");
+        }
+        if (dto.getIdRuta() == null) {
+            throw new RuntimeException("El ID de la ruta es requerido");
+        }
+        if (dto.getIdTipoResiduo() == null) {
+            throw new RuntimeException("El ID del tipo de residuo es requerido");
+        }
         Viaje viaje = new Viaje();
         viaje.setCamion(camionRepositorio.findById(dto.getIdCamion())
                 .orElseThrow(() -> new RuntimeException("Camion no encontrado con id " + dto.getIdCamion())));
@@ -118,7 +142,7 @@ public class ViajeControlador {
         viaje.setFechaFin(dto.getFechaFin());
         viaje.setEstado(dto.getEstado());
         viaje.setIdViaje(id);
-        return ResponseEntity.ok(viajeServicio.actualizarViaje(viaje));
+        return ResponseEntity.ok(toDTO(viajeServicio.actualizarViaje(viaje)));
     }
 
     @PostMapping("/{id}/iniciar")

@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface CamionGPSRepositorio extends JpaRepository<CamionGPS, Integer> {
     Optional<CamionGPS> findByCamionIdCamion(Integer idCamion);
+    boolean existsByCamionIdCamion(Integer idCamion);
 }
